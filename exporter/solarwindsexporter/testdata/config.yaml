@@ -1,0 +1,21 @@
+receivers:
+  examplereceiver:
+
+processors:
+  exampleprocessor:
+
+exporters:
+  solarwinds:
+  solarwinds/2:
+    trace_endpoint: "https://dc.services.visualstudio.com/v2/track"
+    metric_endpoint: "https://dc.services.visualstudio.com/v2/track"
+    log_endpoint: "https://dc.services.visualstudio.com/v2/track"
+    # api_key is used to authenicate against APIs when posting data
+    api_key: "fake"
+
+service:
+  pipelines:
+    traces:
+        receivers: [examplereceiver]
+        processors: [exampleprocessor]
+        exporters: [solarwinds]

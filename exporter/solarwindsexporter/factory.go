@@ -10,7 +10,8 @@ import (
 )
 
 const (
-	typeStr = "solarwinds"
+	typeStr         = "solarwinds"
+	defaultEndpoint = "https://dc.services.visualstudio.com/v2/track"
 )
 
 // NewFactory creates a factory for OTLP exporter.

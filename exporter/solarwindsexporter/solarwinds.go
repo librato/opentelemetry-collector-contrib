@@ -3,7 +3,10 @@ package solarwindsexporter
 import (
 	"context"
 	"errors"
+	"fmt"
+	"time"
 
+	"github.com/appoptics/appoptics-apm-go/v1/ao"
 	"go.opentelemetry.io/collector/config/configmodels"
 	"go.opentelemetry.io/collector/consumer/consumererror"
 	"go.opentelemetry.io/collector/consumer/pdata"
@@ -24,9 +27,9 @@ var (
 func newExporter(cfg configmodels.Exporter) (*exporterImp, error) {
 	oCfg := cfg.(*Config)
 
-	if oCfg.Endpoint == "" {
-		return nil, errors.New("OTLP exporter config requires an Endpoint")
-	}
+	// if oCfg.Endpoint == "" {
+	// 	return nil, errors.New("OTLP exporter config requires an Endpoint")
+	// }
 
 	e := &exporterImp{}
 	e.config = oCfg
@@ -44,14 +47,27 @@ func (e *exporterImp) shutdown(context.Context) error {
 }
 
 func (e *exporterImp) pushTraceData(ctx context.Context, td pdata.Traces) (int, error) {
-	// request := &otlptrace.ExportTraceServiceRequest{
-	// 	ResourceSpans: pdata.TracesToOtlp(td),
-	// }
-	// err := e.w.exportTrace(ctx, request)
 
-	// if err != nil {
-	// 	return td.SpanCount(), fmt.Errorf("failed to push trace data via OTLP exporter: %w", err)
-	// }
+	spans := td.ResourceSpans()
+	for i := 0; i < spans.Len(); i++ {
+		libSpans := spans.At(i).InstrumentationLibrarySpans()
+		for j := 0; j < libSpans.Len(); j++ {
+			libSpan := libSpans.At(i).Spans()
+			for k := 0; k < libSpan.Len(); k++ {
+				span := libSpan.At(k)
+				if len(span.ParentSpanID().Bytes()) == 0 {
+					trace := ao.NewTraceFromID(span.Name(), span.SpanID().HexString(), nil)
+					trace.SetStartTime(time.Unix(0, (int64)(span.StartTime())))
+					trace.SetEventTime(time.Unix(0, (int64)(span.EndTime())))
+					trace.End()
+					fmt.Println(span.Name())
+					fmt.Println(span.SpanID())
+				}
+
+			}
+		}
+	}
+
 	return 0, nil
 }
 
