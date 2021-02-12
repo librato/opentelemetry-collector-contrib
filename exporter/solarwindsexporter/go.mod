@@ -1,4 +1,4 @@
-module github.com/open-telemetry/opentelemetry-collector-contrib/exporter/solarwindsexporter
+module mymymymy.com/librato/opentelemetry-collector-contrib/exporter/solarwindsexporter
 
 go 1.13
 
