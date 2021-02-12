@@ -3,7 +3,7 @@ module github.com/librato/opentelemetry-collector-contrib/exporter/solarwindsexp
 go 1.13
 
 require (
-	github.com/appoptics/appoptics-apm-go v1.14.1-0.20210212215446-1661bf595074
+	github.com/appoptics/appoptics-apm-go v1.14.1-0.20210212225341-39bf109f0aa6
 	github.com/census-instrumentation/opencensus-proto v0.3.0
 	github.com/gogo/protobuf v1.3.1
 	github.com/stretchr/testify v1.6.1
