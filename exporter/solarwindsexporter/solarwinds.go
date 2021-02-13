@@ -58,8 +58,7 @@ func (e *exporterImp) pushTraceData(ctx context.Context, td pdata.Traces) (int, 
 				if len(span.ParentSpanID().Bytes()) == 0 {
 					trace := ao.NewTraceFromID(span.Name(), span.SpanID().HexString(), nil)
 					trace.SetStartTime(time.Unix(0, (int64)(span.StartTime())))
-					trace.SetEventTime(time.Unix(0, (int64)(span.EndTime())))
-					trace.End()
+					trace.EndWithTime(time.Unix(0, (int64)(span.EndTime())))
 					fmt.Println(span.Name())
 					fmt.Println(span.SpanID())
 				}
