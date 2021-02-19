@@ -56,10 +56,11 @@ func (e *exporterImp) pushTraceData(ctx context.Context, td pdata.Traces) (int, 
 			for k := 0; k < libSpan.Len(); k++ {
 				span := libSpan.At(k)
 				if len(span.ParentSpanID().Bytes()) == 0 {
-					trace := ao.NewTraceFromID(span.Name(), span.SpanID().HexString(), nil)
-					trace.SetStartTime(time.Unix(0, (int64)(span.StartTime())))
+					ts := time.Unix(0, (int64)(span.StartTime()))
+					trace := ao.NewTraceFromIDWithTs(span.Name(), span.SpanID().HexString(), &ts, nil)
+					trace.SetStartTime(time.Unix(0, (int64)(span.StartTime()))) //this is for histogram only
 					trace.EndWithTime(time.Unix(0, (int64)(span.EndTime())))
-					fmt.Println(span.Name())
+					fmt.Printf("%v start %v end %v\n", span.Name(), span.StartTime(), span.EndTime())
 					fmt.Println(span.SpanID())
 				}
 
