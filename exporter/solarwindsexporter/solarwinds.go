@@ -67,40 +67,35 @@ func (e *exporterImp) shutdown(context.Context) error {
 func (e *exporterImp) pushTraceData(ctx context.Context, td pdata.Traces) (int, error) {
 	fmt.Printf("Span count %v", td.SpanCount())
 
-	processedIDs := make(map[string]struct{})
 	octds := internaldata.TraceDataToOC(td)
 	for _, octd := range octds {
 		for _, span := range octd.Spans {
 			xTraceID := getXTraceID(span.TraceId, span.SpanId)
 
-			if _, ok := processedIDs[xTraceID]; !ok {
-				fmt.Printf("XTrace ID %v Parent Span ID %v \n ", xTraceID, hex.EncodeToString(span.ParentSpanId))
-				processedIDs[xTraceID] = struct{}{}
-				startOverrides := ao.Overrides{
-					ExplicitTS:    span.StartTime.AsTime(),
-					ExplicitMdStr: xTraceID,
-				}
-				endOverrides := ao.Overrides{
-					ExplicitTS: span.EndTime.AsTime(),
-				}
-				var traceContext context.Context
-				if len(span.ParentSpanId) == 0 {
-					fmt.Printf("Root span starting!!")
-					trace := ao.NewTraceWithOverrides(span.Name.Value, startOverrides, nil)
-					traceContext = ao.NewContext(context.Background(), trace)
-					trace.SetStartTime(span.StartTime.AsTime()) //this is for histogram only
-					trace.EndWithOverrides(endOverrides)
-					fmt.Printf("Root span %v with start overrides : %+v and end overrides : %+v\n\n", span.Name.Value, startOverrides, endOverrides)
-				} else {
-					parentXTraceID := getXTraceID(span.TraceId, span.ParentSpanId)
-					traceContext = ao.FromXTraceIDContext(context.Background(), parentXTraceID)
-					aoSpan, _ := ao.BeginSpanWithOverrides(traceContext, span.Name.Value, ao.SpanOptions{}, startOverrides)
-					aoSpan.EndWithOverrides(endOverrides)
-					fmt.Printf("Child span %+v with context %+v and start overrides : %+v and end overrides : %+v\n\n", span.Name.Value, startOverrides, endOverrides)
-				}
-			} else {
-				fmt.Printf("!!!!! %v has already been processed! Skipping", xTraceID)
+			fmt.Printf("XTrace ID %v Parent Span ID %v \n ", xTraceID, hex.EncodeToString(span.ParentSpanId))
+			startOverrides := ao.Overrides{
+				ExplicitTS:    span.StartTime.AsTime(),
+				ExplicitMdStr: xTraceID,
 			}
+			endOverrides := ao.Overrides{
+				ExplicitTS: span.EndTime.AsTime(),
+			}
+			var traceContext context.Context
+			if len(span.ParentSpanId) == 0 {
+				fmt.Printf("Root span starting!!")
+				trace := ao.NewTraceWithOverrides(span.Name.Value, startOverrides, nil)
+				traceContext = ao.NewContext(context.Background(), trace)
+				trace.SetStartTime(span.StartTime.AsTime()) //this is for histogram only
+				trace.EndWithOverrides(endOverrides)
+				fmt.Printf("Root span %v with start overrides : %+v and end overrides : %+v\n\n", span.Name.Value, startOverrides, endOverrides)
+			} else {
+				parentXTraceID := getXTraceID(span.TraceId, span.ParentSpanId)
+				traceContext = ao.FromXTraceIDContext(context.Background(), parentXTraceID)
+				aoSpan, _ := ao.BeginSpanWithOverrides(traceContext, span.Name.Value, ao.SpanOptions{}, startOverrides)
+				aoSpan.EndWithOverrides(endOverrides)
+				fmt.Printf("Child span %+v with context %+v and start overrides : %+v and end overrides : %+v\n\n", span.Name.Value, startOverrides, endOverrides)
+			}
+
 		}
 	}
 	//
