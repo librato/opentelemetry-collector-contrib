@@ -1,0 +1,14 @@
+dist:
+  otelcol_version: "0.13.1-0.20201020175630-99cb5b244aad"
+#  otelcol_version: "0.13.1"
+  output_path: "/tmp/dist"
+  include_core: true
+
+exporters:
+  - gomod: "github.com/open-telemetry/opentelemetry-collector-contrib/exporter/solarwindsexporter v0.0.0"
+
+replaces:
+  - github.com/open-telemetry/opentelemetry-collector-contrib/exporter/solarwindsexporter => /go/opentelemetry-collector-contrib/exporter/solarwindsexporter
+  - github.com/appoptics/appoptics-apm-go => /go/appoptics-apm-go
+
+

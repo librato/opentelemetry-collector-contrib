@@ -1,0 +1,14 @@
+# compose java integration test environment
+
+version: '2.1'
+
+services:
+  appoptics-opentelemetry-collector:
+    image: "appoptics-opentelemetry-collector"
+    build: .
+    volumes:
+    - ./otel-config.yaml:/otel-config.yaml
+    environment:
+      APPOPTICS_SERVICE_KEY: ec3d1519afe2f54474d3d3cc2c9af0aff9f6e939c0d6302d768d808378025468:ot-docker
+    ports:
+      - "4317:4317"

@@ -1,0 +1,25 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+
+processors:
+  batch:
+
+exporters:
+  solarwinds:
+    #non of the config for solarwinds matters for now!!!
+    trace_endpoint: "https://dc.services.visualstudio.com/v2/track"
+    metric_endpoint: "https://dc.services.visualstudio.com/v2/track"
+    log_endpoint: "https://dc.services.visualstudio.com/v2/track"
+    service_key: "does not matter"
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [solarwinds]
+
+
