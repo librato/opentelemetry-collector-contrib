@@ -1,6 +1,6 @@
 dist:
   otelcol_version: "0.13.1-0.20201020175630-99cb5b244aad"
-#  otelcol_version: "0.13.1"
+#  otelcol_version: "0.18.0"
   output_path: "/tmp/dist"
   include_core: true
 
