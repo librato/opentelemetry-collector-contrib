@@ -21,6 +21,6 @@ So the solution of using `FROM golang:1.16-buster` is rather ugly - First `RUN o
 
 It works, but very ugly
 
-Later on, it's found that we can use `observatorium` builder with `FROM golang:1.15-buster`, which pulls dependencies correctly!
+**Later on, it's found that we can use `observatorium` builder with `FROM golang:1.15-buster`, which pulls dependencies correctly!**
 
 
