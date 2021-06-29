@@ -5,6 +5,13 @@ The docker container will bind to 0.0.0.0:4317 of the docker host, make sure the
 
 The config file `otel-config.yaml` is mounted to the running docker-compose instance
 
+For service key please modify the one in `docker-compose.yaml`, the one in `otel-config.yaml` is currently ignored.
+
+If the collector is started successfully, you should see
+```
+ WARN  [AO] Got dynamic settings. The AppOptics APM agent (0xc000054720) is ready.
+```
+
 ### Remarks
 The DockerFile first run `RUN GO111MODULE=on go get github.com/observatorium/opentelemetry-collector-builder`, take note that we have to use the one in github.com/observatorium/opentelemetry-collector-builder instead of the newer github.com/open-telemetry/opentelemetry-collector-builder as the newer one contains API that does not match our implementation (which was based on v0.13.1 of opentelemetry-collector-contrib)
 
